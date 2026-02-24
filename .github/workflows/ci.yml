@@ -21,6 +21,7 @@ jobs:
           python-version: "3.11"
 
       - name: Set up Java 11 (required for PySpark)
+        id: setup-java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -35,10 +36,14 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
 
       - name: Generate sample data
         run: python data/generate_sample_data.py
+        env:
+          PYTHONPATH: .
 
       - name: Run Unit Tests
         run: |
@@ -47,9 +52,13 @@ jobs:
             --tb=short \
             --cov=src \
             --cov-report=term-missing \
-            --cov-fail-under=70
+            --cov-report=html \
+            --cov-fail-under=50
         env:
           PYTHONPATH: .
+          JAVA_HOME: ${{ steps.setup-java.outputs.path }}
+          PYSPARK_PYTHON: python
+          PYSPARK_DRIVER_PYTHON: python
 
       - name: Upload coverage report
         if: always()

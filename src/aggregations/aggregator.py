@@ -14,6 +14,7 @@ from typing import Dict, List, Optional
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
+from pyspark.sql.types import StringType, StructField, StructType
 from pyspark.sql.window import Window
 
 from src.utils.logger import get_logger, log_execution_time
@@ -191,7 +192,8 @@ def statistical_aggregates(
     if not agg_exprs:
         logger.warning("No valid numeric columns found for statistical aggregation")
         # Return a genuinely empty DataFrame (0 rows) so .count() == 0 in tests
-        return df.sparkSession.createDataFrame([], schema="_empty STRING").limit(0)
+        _empty_schema = StructType([StructField("_empty", StringType(), True)])
+        return df.sparkSession.createDataFrame([], schema=_empty_schema)
 
     result = df.agg(*agg_exprs)
     logger.info("Statistical aggregation complete")
