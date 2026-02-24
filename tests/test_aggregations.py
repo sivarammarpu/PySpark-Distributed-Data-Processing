@@ -112,9 +112,8 @@ class TestStatisticalAggregates:
         assert abs(mean_val - expected) < 1.0
 
     def test_handles_missing_column(self, spark, agg_df):
-        # Should skip missing column gracefully
-        result = statistical_aggregates(agg_df, ["nonexistent"])
-        # Returns an empty-schema DF (count == 0)
+        # Should skip missing column gracefully — returned DF has 0 rows
+        result = statistical_aggregates(agg_df, ["nonexistent_col_xyz"])
         assert result.count() == 0
 
 

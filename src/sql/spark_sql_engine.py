@@ -49,9 +49,15 @@ def register_view(
 
 def drop_view(spark: SparkSession, view_name: str, global_view: bool = False) -> None:
     """Drop a registered view."""
-    prefix = "global_temp." if global_view else ""
-    spark.catalog.dropTempView(f"{prefix}{view_name}")
-    logger.info("Dropped view: %s%s", prefix, view_name)
+    try:
+        if global_view:
+            spark.catalog.dropGlobalTempView(view_name)
+            logger.info("Dropped global temp view: global_temp.%s", view_name)
+        else:
+            spark.catalog.dropTempView(view_name)
+            logger.info("Dropped temp view: %s", view_name)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("Could not drop view '%s': %s", view_name, exc)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
