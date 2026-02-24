@@ -1,0 +1,21 @@
+# Core PySpark
+pyspark==3.5.0
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+
+# Data Generation
+faker==20.1.0
+
+# Utilities
+python-dotenv==1.0.0
+click==8.1.7
+
+# Optional: Delta Lake support (future enhancement)
+# delta-spark==3.0.0
+
+# Optional: Cloud connectors (configure separately)
+# boto3>=1.26.0         # AWS S3
+# azure-storage-blob    # Azure Blob
+# google-cloud-storage  # GCS
